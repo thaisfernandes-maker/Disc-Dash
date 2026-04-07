@@ -1,18 +1,7 @@
 {
   "version": 2,
-  "public": true,
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/admin", "destination": "/admin.html" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, apikey, Authorization" }
-      ]
-    }
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/", "destination": "/index.html" }
   ]
 }
