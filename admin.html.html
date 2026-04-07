@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · DISC F.O.R.M.A</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+  :root {
+    --bg:#0D1117; --surface:#161B22; --surface2:#1C2330; --border:#2D3748;
+    --text:#E6EDF3; --muted:#7D8590; --faint:#3D4451;
+    --D:#E8841A; --I:#4ADE80; --S:#60A5FA; --C:#A78BFA;
+    --D-bg:#1E1208; --I-bg:#0A1F10; --S-bg:#0A1525; --C-bg:#130E24;
+    --green:#1A6B3C;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+  .wrap { max-width:1000px; margin:0 auto; padding:40px 24px 80px; }
+
+  /* HEADER */
+  .top { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:40px; }
+  .badge { display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); padding:5px 14px; border-radius:100px; font-size:11px; font-weight:500; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:12px; }
+  .dot { width:6px; height:6px; background:var(--I); border-radius:50%; animation:pulse 2s infinite; }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1 { font-family:'Syne',sans-serif; font-size:clamp(24px,4vw,36px); font-weight:800; letter-spacing:-.02em; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+  /* BUTTONS */
+  .btn { padding:10px 20px; border-radius:9px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; border:none; }
+  .btn-primary { background:var(--green); color:#fff; }
+  .btn-primary:hover { opacity:.85; }
+  .btn-outline { background:transparent; border:1px solid var(--border); color:var(--muted); }
+  .btn-outline:hover { border-color:var(--muted); color:var(--text); }
+  .btn-copy-all { background:var(--surface2); border:1px solid var(--border); color:var(--text); }
+  .btn-copy-all:hover { border-color:var(--I); }
+  .btn.copied { background:#266640 !important; color:#fff; }
+
+  /* STATS ROW */
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:32px; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; text-align:center; }
+  .stat-num { font-family:'Syne',sans-serif; font-size:36px; font-weight:800; line-height:1; margin-bottom:4px; }
+  .stat-label { font-size:12px; color:var(--muted); }
+
+  /* COMPOSITION */
+  .comp-section { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; margin-bottom:32px; }
+  .section-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:18px; }
+  .comp-bars { display:flex; flex-direction:column; gap:14px; }
+  .comp-row { display:flex; align-items:center; gap:14px; }
+  .comp-letter { font-family:'Syne',sans-serif; font-weight:700; font-size:15px; width:18px; }
+  .comp-name { font-size:13px; color:var(--muted); width:100px; }
+  .comp-track { flex:1; height:10px; background:var(--bg); border-radius:100px; overflow:hidden; }
+  .comp-fill { height:100%; border-radius:100px; transition:width 1s cubic-bezier(.4,0,.2,1); width:0%; }
+  .comp-count { font-size:13px; font-weight:500; width:60px; text-align:right; }
+
+  /* PEOPLE GRID */
+  .people-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin-bottom:32px; }
+  .person-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; }
+  .person-top { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .person-letter { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; line-height:1; }
+  .person-info .person-name { font-weight:600; font-size:15px; line-height:1.2; }
+  .person-info .person-cargo { font-size:12px; color:var(--muted); margin-top:2px; }
+  .person-profile { font-size:12px; color:var(--muted); margin-bottom:12px; }
+  .person-profile span { font-weight:500; }
+  .score-mini { display:flex; gap:8px; margin-bottom:14px; }
+  .score-pill { flex:1; text-align:center; background:var(--bg); border-radius:6px; padding:5px; font-size:11px; font-weight:600; }
+  .person-actions { display:flex; gap:8px; }
+  .btn-sm { padding:7px 12px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all .2s; font-family:'DM Sans',sans-serif; }
+  .btn-sm-outline { background:transparent; border:1px solid var(--border); color:var(--muted); }
+  .btn-sm-outline:hover { border-color:var(--muted); color:var(--text); }
+  .btn-sm-green { background:var(--green); color:#fff; }
+  .btn-sm-green:hover { opacity:.85; }
+  .btn-sm.copied { background:#266640 !important; color:#fff !important; border-color:#266640 !important; }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:100; align-items:center; justify-content:center; padding:24px; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--surface); border:1px solid var(--border); border-radius:16px; max-width:640px; width:100%; max-height:80vh; overflow-y:auto; padding:28px; }
+  .modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .modal-head h3 { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; }
+  .close-btn { background:transparent; border:1px solid var(--border); border-radius:8px; padding:6px 12px; color:var(--muted); cursor:pointer; font-size:13px; font-family:'DM Sans',sans-serif; }
+  .close-btn:hover { color:var(--text); }
+  .skill-text { font-size:13px; color:var(--muted); line-height:1.7; font-family:monospace; white-space:pre-wrap; word-break:break-word; background:var(--bg); border-radius:10px; padding:18px; margin-top:14px; }
+
+  /* ALL SKILLS MODAL */
+  .all-skills-text { font-size:12px; color:var(--muted); line-height:1.7; font-family:monospace; white-space:pre-wrap; word-break:break-word; background:var(--bg); border-radius:10px; padding:18px; margin-top:14px; max-height:400px; overflow-y:auto; }
+
+  /* EMPTY */
+  .empty { text-align:center; padding:60px 24px; color:var(--muted); }
+  .empty h3 { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; color:var(--text); margin-bottom:8px; }
+
+  /* LOADING */
+  .loading { text-align:center; padding:60px; color:var(--muted); font-size:14px; }
+
+  /* TIMESTAMP */
+  .ts { font-size:11px; color:var(--faint); margin-top:8px; }
+
+  @media(max-width:600px){
+    .top{flex-direction:column;}
+    .stats{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <div class="badge"><span class="dot"></span>Admin · F.O.R.M.A Dia 2</div>
+      <h1>Composição do time</h1>
+    </div>
+    <div class="actions">
+      <button class="btn btn-outline" onclick="load()">↻ Atualizar</button>
+      <button class="btn btn-copy-all" id="copyAllBtn" onclick="copyAll()">Copiar todos os mini skills</button>
+    </div>
+  </div>
+
+  <div id="statsRow" class="stats" style="display:none">
+    <div class="stat-card">
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-label">participantes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--D)" id="statD">0</div>
+      <div class="stat-label">Dominância (D)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--I)" id="statI">0</div>
+      <div class="stat-label">Influência (I)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--S)" id="statS">0</div>
+      <div class="stat-label">Estabilidade (S)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--C)" id="statC">0</div>
+      <div class="stat-label">Conformidade (C)</div>
+    </div>
+  </div>
+
+  <div class="comp-section" id="compSection" style="display:none">
+    <div class="section-title">Distribuição do grupo</div>
+    <div class="comp-bars" id="compBars"></div>
+  </div>
+
+  <div class="section-title" style="margin-bottom:16px" id="peopleTitle" style="display:none"></div>
+  <div id="mainContent"><div class="loading">Carregando resultados...</div></div>
+
+</div>
+
+<!-- SKILL MODAL -->
+<div class="modal-overlay" id="skillModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalName">Mini Skill</h3>
+      <button class="close-btn" onclick="closeModal()">Fechar</button>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:4px" onclick="copyModalSkill()">Copiar mini skill</button>
+    <div class="skill-text" id="modalSkillText"></div>
+  </div>
+</div>
+
+<!-- ALL SKILLS MODAL -->
+<div class="modal-overlay" id="allModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Todos os mini skills</h3>
+      <button class="close-btn" onclick="closeAllModal()">Fechar</button>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:4px" onclick="copyAllText()">Copiar tudo</button>
+    <div class="all-skills-text" id="allSkillsText"></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://ggzwpjbmylmgeuqdehlj.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdnendwamJteWxtZ2V1cWRlaGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MjY0OTksImV4cCI6MjA4OTUwMjQ5OX0.YzgIQMrne6xMzEYXbvCkeSv9tUEpWBDqmwdIiEtNFrg";
+
+const DISC_NAMES={D:"Dominância",I:"Influência",S:"Estabilidade",C:"Conformidade"};
+const DISC_COLORS={D:"var(--D)",I:"var(--I)",S:"var(--S)",C:"var(--C)"};
+const DISC_BGS={D:"var(--D-bg)",I:"var(--I-bg)",S:"var(--S-bg)",C:"var(--C-bg)"};
+const DISC_HEX={D:"#E8841A",I:"#4ADE80",S:"#60A5FA",C:"#A78BFA"};
+
+let allData = [];
+let currentSkill = '';
+
+async function load() {
+  document.getElementById('mainContent').innerHTML='<div class="loading">Carregando...</div>';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/disc_results?select=*&order=created_at.asc`, {
+      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`}
+    });
+    allData = await res.json();
+    render(allData);
+  } catch(e) {
+    document.getElementById('mainContent').innerHTML='<div class="loading">Erro ao carregar. Tente novamente.</div>';
+  }
+}
+
+function render(data) {
+  if(!data || data.length===0) {
+    document.getElementById('mainContent').innerHTML=`<div class="empty"><h3>Nenhum resultado ainda</h3><p>Compartilhe o link do assessment com o time.</p></div>`;
+    document.getElementById('statsRow').style.display='none';
+    document.getElementById('compSection').style.display='none';
+    return;
+  }
+
+  // Stats
+  const counts={D:0,I:0,S:0,C:0};
+  data.forEach(r=>counts[r.dominant]++);
+  document.getElementById('statTotal').textContent=data.length;
+  document.getElementById('statD').textContent=counts.D;
+  document.getElementById('statI').textContent=counts.I;
+  document.getElementById('statS').textContent=counts.S;
+  document.getElementById('statC').textContent=counts.C;
+  document.getElementById('statsRow').style.display='grid';
+
+  // Composition bars
+  document.getElementById('compSection').style.display='block';
+  const bars = document.getElementById('compBars');
+  bars.innerHTML='';
+  ['D','I','S','C'].forEach(d=>{
+    const pct = Math.round((counts[d]/data.length)*100);
+    bars.innerHTML+=`
+      <div class="comp-row">
+        <span class="comp-letter" style="color:${DISC_HEX[d]}">${d}</span>
+        <span class="comp-name">${DISC_NAMES[d]}</span>
+        <div class="comp-track"><div class="comp-fill" id="cbar${d}" style="background:${DISC_HEX[d]}"></div></div>
+        <span class="comp-count" style="color:${DISC_HEX[d]}">${counts[d]} pessoa${counts[d]!==1?'s':''} · ${pct}%</span>
+      </div>`;
+  });
+  setTimeout(()=>['D','I','S','C'].forEach(d=>{
+    const el=document.getElementById('cbar'+d);
+    if(el) el.style.width=Math.round((counts[d]/data.length)*100)+'%';
+  }),200);
+
+  // People grid
+  const grid = document.createElement('div');
+  grid.className='people-grid';
+
+  data.forEach((r,i)=>{
+    const card = document.createElement('div');
+    card.className='person-card';
+    const ts = new Date(r.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    card.innerHTML=`
+      <div class="person-top">
+        <div class="person-letter" style="color:${DISC_HEX[r.dominant]}">${r.dominant}</div>
+        <div class="person-info">
+          <div class="person-name">${r.name}</div>
+          <div class="person-cargo">${r.cargo}</div>
+        </div>
+      </div>
+      <div class="person-profile">
+        <span style="color:${DISC_HEX[r.dominant]};font-weight:600">${DISC_NAMES[r.dominant]}</span>
+        <span style="color:var(--muted)"> + </span>
+        <span style="color:${DISC_HEX[r.secondary]}">${DISC_NAMES[r.secondary]}</span>
+      </div>
+      <div class="score-mini">
+        <div class="score-pill" style="color:${DISC_HEX['D']}">D ${r.score_d}</div>
+        <div class="score-pill" style="color:${DISC_HEX['I']}">I ${r.score_i}</div>
+        <div class="score-pill" style="color:${DISC_HEX['S']}">S ${r.score_s}</div>
+        <div class="score-pill" style="color:${DISC_HEX['C']}">C ${r.score_c}</div>
+      </div>
+      <div class="person-actions">
+        <button class="btn-sm btn-sm-outline" onclick="showSkill(${i})">Ver mini skill</button>
+        <button class="btn-sm btn-sm-green" id="copybtn${i}" onclick="copyPersonSkill(${i})">Copiar skill</button>
+        <button class="btn-sm" style="background:#3D2478;color:#fff;border:none;" onclick="downloadReport(${i})">⬇ Relatório</button>
+      </div>
+      <div class="ts">${ts}</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  document.getElementById('mainContent').innerHTML='';
+  document.getElementById('mainContent').appendChild(grid);
+}
+
+function downloadReport(i) {
+  const r = allData[i];
+  const DISC_NAMES_LOCAL={D:"Dominância",I:"Influência",S:"Estabilidade",C:"Conformidade"};
+  const DISC_HEX_LOCAL={D:"#E8841A",I:"#4ADE80",S:"#60A5FA",C:"#A78BFA"};
+  const total = r.score_d + r.score_i + r.score_s + r.score_c;
+  const pct = {
+    D:Math.round(r.score_d/total*100),
+    I:Math.round(r.score_i/total*100),
+    S:Math.round(r.score_s/total*100),
+    C:Math.round(r.score_c/total*100)
+  };
+
+  const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>DISC FORMA · ${r.name}</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
+:root{--bg:#0D1117;--surface:#161B22;--border:#2D3748;--text:#E6EDF3;--muted:#7D8590;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;padding:32px 28px 60px;max-width:700px;margin:0 auto;}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);padding:5px 14px;border-radius:100px;font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px;}
+.hero{display:flex;align-items:flex-start;gap:20px;margin-bottom:24px;}
+.big{font-family:'Syne',sans-serif;font-size:72px;font-weight:800;line-height:1;flex-shrink:0;}
+.info .who{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.info h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;margin-bottom:8px;}
+.info .tag{font-size:14px;color:var(--muted);font-style:italic;line-height:1.6;}
+.sec{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:24px;}
+.sec-l{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+.sec-i{font-size:13px;color:var(--muted);line-height:1.4;}
+.sec-i strong{color:var(--text);display:block;margin-bottom:2px;}
+.scores{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:20px;}
+.sr{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.sr:last-child{margin-bottom:0;}
+.sl{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;width:18px;}
+.sn{font-size:12px;color:var(--muted);width:90px;}
+.tr{flex:1;height:7px;background:var(--bg);border-radius:100px;overflow:hidden;}
+.fi{height:100%;border-radius:100px;}
+.sp{font-size:12px;font-weight:500;width:34px;text-align:right;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.ct{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.card ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.card ul li{font-size:13px;display:flex;gap:7px;line-height:1.4;}
+.card ul li::before{content:'→';opacity:.45;flex-shrink:0;}
+.bc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:20px;}
+.bch{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.bc p{font-size:14px;color:var(--text);line-height:1.7;white-space:pre-line;}
+.tr2{padding:12px 14px;background:var(--bg);border-radius:8px;border-left:3px solid;font-size:14px;color:var(--text);line-height:1.55;margin-top:12px;}
+.sb{background:#1C2330;border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:20px;}
+.sbh{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:14px;}
+.st{font-size:13px;color:var(--muted);line-height:1.7;font-family:monospace;white-space:pre-wrap;word-break:break-word;}
+.foot{text-align:center;font-size:11px;color:#3D4451;margin-top:40px;padding-top:20px;border-top:1px solid var(--border);}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  body{background:#0D1117!important;}
+  .bc,.scores,.g2,.sec,.sb{break-inside:avoid;}
+  @page{margin:12mm;size:A4;}
+}
+</style>
+</head>
+<body>
+<div class="badge">F.O.R.M.A · Workshop Dia 2 · Resultado DISC</div>
+<div class="hero">
+  <div class="big" style="color:${DISC_HEX_LOCAL[r.dominant]}">${r.dominant}</div>
+  <div class="info">
+    <div class="who">${r.cargo}</div>
+    <h2 style="color:${DISC_HEX_LOCAL[r.dominant]}">${r.name}</h2>
+    <div class="tag">Perfil dominante: ${DISC_NAMES_LOCAL[r.dominant]}</div>
+  </div>
+</div>
+<div class="sec">
+  <span class="sec-l" style="color:${DISC_HEX_LOCAL[r.secondary]}">${r.secondary}</span>
+  <div class="sec-i"><strong>Perfil secundário: ${DISC_NAMES_LOCAL[r.secondary]}</strong>Combinação de estilos que define como age em diferentes contextos.</div>
+</div>
+<div class="scores">
+  ${['D','I','S','C'].map(d=>`
+  <div class="sr">
+    <span class="sl" style="color:${DISC_HEX_LOCAL[d]}">${d}</span>
+    <span class="sn">${DISC_NAMES_LOCAL[d]}</span>
+    <div class="tr"><div class="fi" style="background:${DISC_HEX_LOCAL[d]};width:${pct[d]}%"></div></div>
+    <span class="sp" style="color:${DISC_HEX_LOCAL[d]}">${pct[d]}%</span>
+  </div>`).join('')}
+</div>
+<div class="sb">
+  <div class="sbh">🧠 Mini Skill para o Claude</div>
+  <div class="st">${r.mini_skill}</div>
+</div>
+<div class="foot">Gerado no Workshop F.O.R.M.A — Dia 2 · ${new Date(r.created_at).toLocaleDateString('pt-BR')}</div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `DISC_FORMA_${r.name.replace(/\s+/g,'_')}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function showSkill(i) {
+  const r = allData[i];
+  document.getElementById('modalName').textContent=`${r.name} · ${DISC_NAMES[r.dominant]}`;
+  document.getElementById('modalSkillText').textContent=r.mini_skill;
+  currentSkill=r.mini_skill;
+  document.getElementById('skillModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('skillModal').classList.remove('open'); }
+
+function copyModalSkill() {
+  navigator.clipboard.writeText(currentSkill).then(()=>{
+    const btn=event.target;
+    btn.textContent='Copiado ✓';
+    setTimeout(()=>btn.textContent='Copiar mini skill',2000);
+  });
+}
+
+function copyPersonSkill(i) {
+  const r=allData[i];
+  navigator.clipboard.writeText(r.mini_skill).then(()=>{
+    const btn=document.getElementById('copybtn'+i);
+    btn.textContent='Copiado ✓';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copiar';btn.classList.remove('copied');},2500);
+  });
+}
+
+function copyAll() {
+  if(!allData.length) return;
+  const all=allData.map(r=>`${'='.repeat(50)}\n${r.mini_skill}`).join('\n\n');
+  document.getElementById('allSkillsText').textContent=all;
+  document.getElementById('allModal').classList.add('open');
+}
+
+function closeAllModal() { document.getElementById('allModal').classList.remove('open'); }
+
+function copyAllText() {
+  const text=document.getElementById('allSkillsText').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=event.target;
+    btn.textContent='Copiado ✓';
+    setTimeout(()=>btn.textContent='Copiar tudo',2000);
+  });
+}
+
+// Close modals on overlay click
+document.getElementById('skillModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('allModal').addEventListener('click',function(e){if(e.target===this)closeAllModal();});
+
+load();
+// Auto-refresh every 30s
+setInterval(load, 30000);
+</script>
+</body>
+</html>
